@@ -1,3 +1,4 @@
+import 'package:dental_project/ui/shared/shared_widgets/colors.dart';
 import 'package:flutter/material.dart';
 
 class EyeDiseaseDiagnosisScreen extends StatelessWidget {
@@ -5,10 +6,10 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF111418)),
+          icon: Icon(Icons.arrow_back, color: AppColors.blackColor),
           onPressed: () {},
         ),
         title: Text(
@@ -16,7 +17,7 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF111418),
+            color: AppColors.blackColor,
           ),
         ),
         centerTitle: true,
@@ -31,7 +32,7 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF111418),
+                color: AppColors.blackColor,
               ),
             ),
             SizedBox(height: 16),
@@ -44,7 +45,7 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF111418),
+                color: AppColors.blackColor,
               ),
             ),
             SizedBox(height: 16),
@@ -66,11 +67,11 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
         title,
         style: TextStyle(
           fontSize: 16,
-          color: Color(0xFF111418),
+          color: AppColors.blackColor,
         ),
       ),
-      activeColor: Color(0xFF1980E6),
-      checkColor: Colors.white,
+      activeColor: AppColors.blueColor,
+      checkColor: AppColors.whiteColor,
       controlAffinity: ListTileControlAffinity.trailing,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
@@ -86,7 +87,7 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Color(0xFFDCE0E5)),
         ),
@@ -105,7 +106,7 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
             ),
             Icon(
               Icons.add,
-              color: Color(0xFF111418),
+              color: AppColors.blackColor,
             ),
           ],
         ),
@@ -119,7 +120,7 @@ class EyeDiseaseDiagnosisScreen extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {},
         style: ElevatedButton.styleFrom(
-          foregroundColor: Color(0xFF111418),
+          foregroundColor: AppColors.blackColor,
           backgroundColor: Color(0xFFF0F2F4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

@@ -1,20 +1,25 @@
 import 'package:dental_project/core/data/repository/shared_prefrence_repository.dart';
 import 'package:dental_project/core/translation/app_translation.dart';
 import 'package:dental_project/ui/shared/utils.dart';
-import 'package:dental_project/ui/views/diagnosis_form.dart';
-import 'package:dental_project/ui/views/doctor_form.dart';
-import 'package:dental_project/ui/views/eye_disease_diagnosis_view.dart';
-import 'package:dental_project/ui/views/invoice_form.dart';
-import 'package:dental_project/ui/views/login.dart';
-import 'package:dental_project/ui/views/medical_record_form.dart';
-import 'package:dental_project/ui/views/patient_data_form_view.dart';
-import 'package:dental_project/ui/views/patient_details_view.dart';
-import 'package:dental_project/ui/views/patient_form%20.dart';
+import 'package:dental_project/ui/views/dashboard_view/dashboard_view.dart';
+import 'package:dental_project/ui/views/diagnoses_view/diagnosis_form.dart';
+import 'package:dental_project/ui/views/doctor_form/doctor_form.dart';
+import 'package:dental_project/ui/views/intro_view/intro_view.dart';
+import 'package:dental_project/ui/views/diagnoses_view/display_diagnoses_view.dart';
+import 'package:dental_project/ui/views/patient_details_view/display_patients_view.dart';
+import 'package:dental_project/ui/views/patient_details_view/patient_details_view.dart';
+
+import 'package:dental_project/ui/views/bills_form_view/bills_form.dart';
+import 'package:dental_project/ui/views/login_view.dart';
+import 'package:dental_project/ui/views/treatment_plans_view/treatment_plans_view.dart';
+import 'package:dental_project/ui/views/patient_data_form_view/patient_data_form_view.dart';
+import 'package:dental_project/ui/views/patient_details_view/patient_details_view.dart';
+import 'package:dental_project/ui/views/appointments_view/appointment_view.dart';
+import 'package:dental_project/ui/views/splash_view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -47,12 +52,12 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-         home: DoctorForm());
-        // home: sharedPreferencesService.isAuth()
-        //     ? sharedPreferencesService.getUserType() == "user"
-        //         ? HomeUserView()
-        //         : HomeStudentView()
-        //     : SplashView());
+        home: PatientDataForm());
+    // home: sharedPreferencesService.isAuth()
+    //     ? sharedPreferencesService.getUserType() == "user"
+    //         ? HomeUserView()
+    //         : HomeStudentView()
+    //     : SplashView());
   }
 }
 

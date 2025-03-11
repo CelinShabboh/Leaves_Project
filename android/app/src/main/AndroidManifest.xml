@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="dental_students"
+        android:label="Eye Diagnose"
         android:name="${applicationName}"
-        android:icon="@mipmap/teeth_icon">
+        android:icon="@mipmap/eye_treat">
         <activity
             android:name=".MainActivity"
             android:exported="true"

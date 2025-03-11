@@ -1,17 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dental_project/core/data/models/doctor_info.dart';
-import 'package:dental_project/core/data/models/token_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/condition_model.dart';
-import '../models/exhibition_model.dart';
-import '../models/user_info.dart';
-import '../models/user_login_info.dart';
+
 
 enum DataType {
   INT,
@@ -43,48 +38,23 @@ class SharedPrefrenceRepository {
   static const String PREF_USERTYPE = "user";
   static const String _imageModelKey = 'image_model_key';
 
-  // حفظ كائن ImageModel في SharedPreferences
-  static Future<bool> saveImageModel(ImageModel imageModel) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.setString(_imageModelKey, json.encode(imageModel.toJson()));
-  }
+  
 
-  // استرجاع كائن ImageModel من SharedPreferences
-  static Future<ImageModel?> getImageModel() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? jsonString = prefs.getString(_imageModelKey);
+  // void setTokens(Tokens tokens) {
+  //   final jsonTokens = jsonEncode(tokens.toJson());
+  //   pref.setString(accessTokenKey, jsonTokens);
+  // }
 
-    if (jsonString != null) {
-      return ImageModel.fromJson(json.decode(jsonString));
-    } else {
-      return null;
-    }
-  }
+  // Tokens getTokens() {
+  //   final jsonTokens = pref.getString(accessTokenKey);
 
-
-  void setTokens(Tokens tokens) {
-    final jsonTokens = jsonEncode(tokens.toJson());
-    pref.setString(accessTokenKey, jsonTokens);
-  }
-
-  void setUserType(String userType) {
-    pref.setString(PREF_USERTYPE, userType);
-  }
-
-  String getUserType() {
-    return pref.getString(PREF_USERTYPE) ?? "";
-  }
-
-  Tokens getTokens() {
-    final jsonTokens = pref.getString(accessTokenKey);
-
-    if (jsonTokens != null) {
-      final Map<String, dynamic> tokensMap = jsonDecode(jsonTokens);
-      return Tokens.fromJson(tokensMap);
-    } else {
-      return Tokens();
-    }
-  }
+  //   if (jsonTokens != null) {
+  //     final Map<String, dynamic> tokensMap = jsonDecode(jsonTokens);
+  //     return Tokens.fromJson(tokensMap);
+  //   } else {
+  //     return Tokens();
+  //   }
+  // }
 
   // void setUserInfo(UserInfo userInfo) {
   //   setPrefrenc(
@@ -102,37 +72,6 @@ class SharedPrefrenceRepository {
   //   }
   // }
 
-  void setUserInfo(UserInfo userInfo) {
-    final jsonUserInfo = jsonEncode(userInfo.toJson());
-    pref.setString(PREF_USER_INFO, jsonUserInfo);
-  }
-
-  void setDoctorInfo(DoctorInfo userInfo) {
-    final jsonUserInfo = jsonEncode(userInfo.toJson());
-    pref.setString(PREF_USER_INFO, jsonUserInfo);
-  }
-
-  DoctorInfo getDoctorInfo() {
-    final jsonUserInfo = pref.getString(PREF_USER_INFO);
-
-    if (jsonUserInfo != null) {
-      final Map<String, dynamic> userInfoMap = jsonDecode(jsonUserInfo);
-      return DoctorInfo.fromJson(userInfoMap);
-    } else {
-      return DoctorInfo();
-    }
-  }
-
-  UserInfo getUserInfo() {
-    final jsonUserInfo = pref.getString(PREF_USER_INFO);
-
-    if (jsonUserInfo != null) {
-      final Map<String, dynamic> userInfoMap = jsonDecode(jsonUserInfo);
-      return UserInfo.fromJson(userInfoMap);
-    } else {
-      return UserInfo();
-    }
-  }
 
   void setAccessTokenExpiry(int expiryTimeMillis) {
     setPrefrenc(
@@ -285,25 +224,6 @@ class SharedPrefrenceRepository {
     return pref.get(key);
   }
 
-  Future<void> saveConditionsList(List<ConditionsModel> conditions) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> jsonStringList =
-        conditions.map((person) => jsonEncode(person.toJson())).toList();
-    await prefs.setStringList('conditions_list', jsonStringList);
-  }
-
-  Future<List<ConditionsModel>> getConditionsList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? jsonStringList = prefs.getStringList('conditions_list');
-
-    if (jsonStringList != null) {
-      return jsonStringList
-          .map((jsonString) => ConditionsModel.fromJson(jsonDecode(jsonString)))
-          .toList();
-    }
-
-    return [];
-  }
 
   Future<void> deleteConditionsList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

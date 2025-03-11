@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dental_project/core/enums/request_type.dart';
 import 'package:http/http.dart' as http;
 
-import '../data/models/token_info.dart';
 import '../data/network/network_config.dart';
 
 class NetworkUtil {
