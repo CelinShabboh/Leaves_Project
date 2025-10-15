@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dental_project/app/my_app.dart';
 import 'package:dental_project/core/data/repository/shared_prefrence_repository.dart';
 import 'package:dental_project/ui/shared/shared_widgets/colors.dart';
@@ -9,7 +8,6 @@ import 'package:dental_project/ui/views/leaves_view/leaves_controller/leaves_cub
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LeavesView extends StatefulWidget {
@@ -39,18 +37,28 @@ class _LeavesViewState extends State<LeavesView> {
   final ScrollController _scrollController = ScrollController();
   bool _isBottomLoading = false;
   bool _showErrorMessage = false;
-
   Timer? _tokenTimer;
+
+  bool _isMonthDropdownOpen = false;
+  bool _isYearDropdownOpen = false;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final isValid = SharedPrefrenceRepository().isTokenValid();
       if (!isValid) {
         Get.offAll(const LoginView());
         return;
       }
+
+      context.read<LeavesCubit>().getLeaves(
+            companyId: widget.companyId,
+            departmentId: widget.departmentId,
+            employeeId: widget.employeeId,
+            token: widget.token,
+          );
     });
 
     _tokenTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
@@ -60,13 +68,6 @@ class _LeavesViewState extends State<LeavesView> {
         Get.offAll(const LoginView());
       }
     });
-
-    context.read<LeavesCubit>().getLeaves(
-          companyId: widget.companyId,
-          departmentId: widget.departmentId,
-          employeeId: widget.employeeId,
-          token: widget.token,
-        );
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
@@ -147,7 +148,7 @@ class _LeavesViewState extends State<LeavesView> {
             final leaves = state.leaves;
             final total = state.totalLeaves;
             final shown = leaves.length;
-            final progress = total == 0 ? 0.0 : shown / total;
+            final progress = total == 0 ? 0.0 : (shown / total).clamp(0.0, 1.0);
 
             return SingleChildScrollView(
               controller: _scrollController,
@@ -228,6 +229,7 @@ class _LeavesViewState extends State<LeavesView> {
                     ],
                   ),
                   const SizedBox(height: 20),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
@@ -236,9 +238,10 @@ class _LeavesViewState extends State<LeavesView> {
                         Text(
                           "My Leaves",
                           style: GoogleFonts.cairo(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.MyLeavesColor),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.MyLeavesColor,
+                          ),
                         ),
                         Row(
                           children: [
@@ -274,6 +277,7 @@ class _LeavesViewState extends State<LeavesView> {
                     ),
                   ),
                   const SizedBox(height: 16),
+
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -344,6 +348,7 @@ class _LeavesViewState extends State<LeavesView> {
                       );
                     },
                   ),
+
                   if (_isBottomLoading)
                     Padding(
                       padding: const EdgeInsets.all(16),
@@ -373,6 +378,7 @@ class _LeavesViewState extends State<LeavesView> {
                         ),
                       ),
                     ),
+
                   if (_showErrorMessage)
                     Padding(
                       padding: const EdgeInsets.all(16),
@@ -416,9 +422,7 @@ class _LeavesViewState extends State<LeavesView> {
     );
   }
 
-  bool _isMonthDropdownOpen = false;
-  bool _isYearDropdownOpen = false;
-
+  // ✅ مكونات مساعدة
   Widget _buildDropdown(
     String value,
     List<String> items,
