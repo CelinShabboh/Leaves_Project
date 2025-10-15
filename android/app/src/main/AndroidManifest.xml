@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="Eye Diagnose"
+        android:label="HRLeaves"
         android:name="${applicationName}"
-        android:icon="@mipmap/eye_treat">
+        android:icon="@mipmap/leaves_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
