@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 enum DataType {
   INT,
   STRING,
@@ -38,77 +36,12 @@ class SharedPrefrenceRepository {
   static const String PREF_USERTYPE = "user";
   static const String _imageModelKey = 'image_model_key';
 
-  
-
-  // void setTokens(Tokens tokens) {
-  //   final jsonTokens = jsonEncode(tokens.toJson());
-  //   pref.setString(accessTokenKey, jsonTokens);
-  // }
-
-  // Tokens getTokens() {
-  //   final jsonTokens = pref.getString(accessTokenKey);
-
-  //   if (jsonTokens != null) {
-  //     final Map<String, dynamic> tokensMap = jsonDecode(jsonTokens);
-  //     return Tokens.fromJson(tokensMap);
-  //   } else {
-  //     return Tokens();
-  //   }
-  // }
-
-  // void setUserInfo(UserInfo userInfo) {
-  //   setPrefrenc(
-  //       type: DataType.STRING,
-  //       key: PREF_USER_INFO,
-  //       value: jsonEncode(userInfo.toJson()));
-  // }
-
-  //  UserInfo getUserInfo() {
-  //   String? userInfoJson = getPrefrence(PREF_USER_INFO);
-  //   if (userInfoJson != null) {
-  //     return UserInfo.fromJson(jsonDecode(userInfoJson));
-  //   } else {
-  //     return UserInfo(); // يمكنك تعيين القيم الافتراضية هنا إذا لم يتم العثور على البيانات في SharedPreferences
-  //   }
-  // }
-
-
-  void setAccessTokenExpiry(int expiryTimeMillis) {
-    setPrefrenc(
-        type: DataType.INT, key: accessTokenExpiryKey, value: expiryTimeMillis);
-  }
-
-  int? getAccessTokenExpiry() {
-    return getPrefrence(accessTokenExpiryKey);
-  }
-
-  void setRefreshTokenExpiry(int expiryTimeMillis) {
-    setPrefrenc(
-        type: DataType.INT,
-        key: refreshTokenExpiryKey,
-        value: expiryTimeMillis);
-  }
-
-  int? getRefreshTokenExpiry() {
-    return getPrefrence(refreshTokenExpiryKey);
-  }
-
-  // في الداخل SharedPrefrenceRepository
-
   void setRememberMe(bool value) {
     setPrefrenc(type: DataType.BOOL, key: REMEMBER, value: value);
   }
 
   bool? getRememberMe() {
     return getPrefrence(REMEMBER);
-  }
-
-  void setSavedPhone(String phone) {
-    setPrefrenc(type: DataType.STRING, key: PREF_PHONE, value: phone);
-  }
-
-  String? getSavedPhone() {
-    return getPrefrence(PREF_PHONE);
   }
 
   void setSavedPassword(String password) {
@@ -166,28 +99,56 @@ class SharedPrefrenceRepository {
     }
   }
 
-  // void setlogin(bool value) {
-  //   setPrefrenc(type: DataType.BOOL, key: LOGIN, value: value);
-  // }
+void setLoginData({
+  required String accessToken,
+  required String refreshToken,
+  required int employeeId,
+  required String employeeName,
+  required int companyId,
+  required int departmentId,
+  required DateTime accessTokenExpiry,
+}) {
+  setPrefrenc(type: DataType.STRING, key: accessTokenKey, value: accessToken);
+  setPrefrenc(type: DataType.STRING, key: refreshTokenKey, value: refreshToken);
+  setPrefrenc(type: DataType.INT, key: 'employee_id', value: employeeId);
+  setPrefrenc(type: DataType.STRING, key: 'employee_name', value: employeeName);
+  setPrefrenc(type: DataType.INT, key: 'company_id', value: companyId);
+  setPrefrenc(type: DataType.INT, key: 'department_id', value: departmentId);
+  setPrefrenc(
+      type: DataType.STRING,
+      key: accessTokenExpiryKey,
+      value: accessTokenExpiry.toIso8601String());
+}
 
-  // bool getlogin() {
-  //   if (pref.containsKey(LOGIN))
-  //     return getPrefrence(LOGIN);
-  //   else
-  //     return false;
-  // }
-  bool isAuth() {
-    if (!pref.containsKey(accessTokenKey) ||
-        pref.getString(accessTokenKey) == "") {
-      return false;
-    } else {
-      return true;
-    }
-  }
+String? getAccessToken() => getPrefrence(accessTokenKey);
+String? getRefreshToken() => getPrefrence(refreshTokenKey);
+int? getEmployeeId() => getPrefrence('employee_id');
+String? getEmployeeName() => getPrefrence('employee_name');
+int? getCompanyId() => getPrefrence('company_id');
+int? getDepartmentId() => getPrefrence('department_id');
+DateTime? getAccessTokenExpiry() {
+  final expiry = getPrefrence(accessTokenExpiryKey);
+  if (expiry != null) return DateTime.parse(expiry);
+  return null;
+}
 
-  void setFirstLunch(bool value) {
-    setPrefrenc(type: DataType.BOOL, key: PREF_FIRST_LUNCH, value: value);
-  }
+void clearLoginData() {
+  pref.remove(accessTokenKey);
+  pref.remove(refreshTokenKey);
+  pref.remove('employee_id');
+  pref.remove('employee_name');
+  pref.remove('company_id');
+  pref.remove('department_id');
+  pref.remove(accessTokenExpiryKey);
+}
+
+bool isTokenValid() {
+  final expiry = getAccessTokenExpiry();
+  if (expiry == null) return false;
+  return DateTime.now().isBefore(expiry);
+}
+
+
 
   bool getFirstLunch() {
     if (pref.containsKey(PREF_FIRST_LUNCH))
@@ -223,7 +184,6 @@ class SharedPrefrenceRepository {
   dynamic getPrefrence(String key) {
     return pref.get(key);
   }
-
 
   Future<void> deleteConditionsList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

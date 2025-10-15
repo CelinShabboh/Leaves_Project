@@ -1,16 +1,44 @@
-# dental_project
+# Leaves Management App
 
-A new Flutter project.
+## Overview
 
-## Getting Started
+This Flutter application provides an elegant interface for managing **employee leaves**.  
+Each employee can view their leave records, including:
 
-This project is a starting point for a Flutter application.
+- Leave duration
+- Reason
+- Type and status  
+  The app supports pagination, smooth scrolling with a loading indicator, and auto logout when the authentication token expires.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Technologies Used
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Frontend
+
+- **Flutter**
+- **Dart**
+- **Bloc (Cubit)** for state management
+- **GetX** for navigation
+- **Google Fonts** for styling
+- **SharedPreferences** for local storage (token, employee info)
+- **Dio** for API requests
+
+### 🔹 Backend
+
+- **Django REST Framework (DRF)**
+- **JWT Authentication**
+
+---
+
+## Features
+
+Fetch employee leaves dynamically using pagination  
+ Circular loading indicator while scrolling  
+ Error message with retry button when fetching fails  
+ Auto logout when the JWT token expires (15 minutes)  
+ Responsive, clean UI using Google Fonts
+
+---
+
+## Project Structure

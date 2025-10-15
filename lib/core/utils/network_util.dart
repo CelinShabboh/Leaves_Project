@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../data/network/network_config.dart';
 
 class NetworkUtil {
-  static String baseUrl = 'teethbackend-98vq.onrender.com';
+  static String baseUrl = 'https://ff2333429c14.ngrok-free.app';
   String? accessToken;
   static Future sendRequest({
     required RequestType type,
