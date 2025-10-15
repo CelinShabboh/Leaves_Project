@@ -25,91 +25,114 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> login() async {
-    if (_hasNavigated) return;
-    emit(state.copyWith(isLoading: true, error: null, successMessage: null));
+  if (_hasNavigated) return;
 
-    try {
-      final dio = Dio(
-        BaseOptions(
-          baseUrl: ApiConstants.baseUrl,
-          connectTimeout: const Duration(seconds: 15),
-          receiveTimeout: const Duration(seconds: 15),
-          headers: {'Content-Type': 'application/json'},
-        ),
-      );
+  final emailValid = state.email.trim().isNotEmpty;
+  final passwordValid = state.password.trim().isNotEmpty;
 
-      final response = await dio.post(
-        '/v1/Auth/login',
-        data: {
-          "username": state.email,
-          "password": state.password,
-        },
-      );
+  if (!emailValid || !passwordValid) {
+    emit(state.copyWith(
+      emailError: emailValid ? null : 'Email is required',
+      passwordError: passwordValid ? null : 'Password is required',
+      error: null,
+    ));
+    return;
+  }
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = response.data;
-        if (data['response'] == 1) {
-          final accessToken = data['data']['accessToken'] ?? '';
-          final refreshToken = data['data']['refreshToken'] ?? '';
-          final user = data['data']['user'] ?? {};
-          final employee = user['employee'] ?? {};
-          final company = employee['company'] ?? {};
-          final department = employee['department'] ?? {};
+  emit(state.copyWith(
+    isLoading: true,
+    error: null,
+    successMessage: null,
+    emailError: null,
+    passwordError: null,
+  ));
 
-          final employeeId = employee['id'] ?? 0;
-          final employeeName = employee['fullName'] ?? '';
-          final companyId = company['id'] ?? 0;
-          final departmentId = department['id'] ?? 0;
+  try {
+    final dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 15),
+      headers: {'Content-Type': 'application/json'},
+    ));
 
-          final accessTokenExpiry =
-              DateTime.now().add(const Duration(minutes: 15));
+    final response = await dio.post(
+      '/v1/Auth/login',
+      data: {
+        "username": state.email,
+        "password": state.password,
+      },
+    );
 
-          _prefs.setLoginData(
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-            employeeId: employeeId,
-            employeeName: employeeName,
-            companyId: companyId,
-            departmentId: departmentId,
-            accessTokenExpiry: accessTokenExpiry,
-          );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = response.data;
+      if (data['response'] == 1) {
+        final accessToken = data['data']['accessToken'] ?? '';
+        final refreshToken = data['data']['refreshToken'] ?? '';
+        final user = data['data']['user'] ?? {};
+        final employee = user['employee'] ?? {};
+        final company = employee['company'] ?? {};
+        final department = employee['department'] ?? {};
 
-          if (state.isRememberMeChecked) {
-            _prefs.setSavedPassword(state.password);
-            _prefs.setname(state.email);
-          }
+        final employeeId = employee['id'] ?? 0;
+        final employeeName = employee['fullName'] ?? '';
+        final companyId = company['id'] ?? 0;
+        final departmentId = department['id'] ?? 0;
 
-          _hasNavigated = true;
+        final accessTokenExpiry =
+            DateTime.now().add(const Duration(minutes: 15));
 
-          Future.microtask(() {
-            Get.offAll(() => BlocProvider(
-                  create: (_) => LeavesCubit(LeaveRepository()),
-                  child: LeavesView(
-                    employeeName: _prefs.getEmployeeName() ?? '',
-                    employeeId: _prefs.getEmployeeId() ?? 0,
-                    companyId: _prefs.getCompanyId() ?? 0,
-                    departmentId: _prefs.getDepartmentId() ?? 0,
-                    token: _prefs.getAccessToken() ?? '',
-                  ),
-                ));
-          });
+        _prefs.setLoginData(
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          employeeId: employeeId,
+          employeeName: employeeName,
+          companyId: companyId,
+          departmentId: departmentId,
+          accessTokenExpiry: accessTokenExpiry,
+        );
 
-          emit(state.copyWith(
-              isLoading: false, successMessage: data['message'], error: null));
-        } else {
-          emit(state.copyWith(
-              isLoading: false, error: data['message'], successMessage: null));
+        if (state.isRememberMeChecked) {
+          _prefs.setSavedPassword(state.password);
+          _prefs.setname(state.email);
         }
+
+        _hasNavigated = true;
+
+        Future.microtask(() {
+          Get.offAll(() => BlocProvider(
+                create: (_) => LeavesCubit(LeaveRepository()),
+                child: LeavesView(
+                  employeeName: _prefs.getEmployeeName() ?? '',
+                  employeeId: _prefs.getEmployeeId() ?? 0,
+                  companyId: _prefs.getCompanyId() ?? 0,
+                  departmentId: _prefs.getDepartmentId() ?? 0,
+                  token: _prefs.getAccessToken() ?? '',
+                ),
+              ));
+        });
+
+        emit(state.copyWith(
+          isLoading: false,
+          successMessage: data['message'],
+          error: null,
+        ));
       } else {
         emit(state.copyWith(
-            isLoading: false,
-            error: 'Server error ${response.statusCode}',
-            successMessage: null));
+          isLoading: false,
+          error: data['message'],
+        ));
       }
-    } catch (e) {
+    } else {
       emit(state.copyWith(
-          isLoading: false, error: e.toString(), successMessage: null));
+        isLoading: false,
+        error: 'Server error ${response.statusCode}',
+      ));
     }
+  } catch (e) {
+    emit(state.copyWith(
+      isLoading: false,
+      error: e.toString(),
+    ));
   }
 }
-
+}
