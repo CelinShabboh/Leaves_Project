@@ -81,7 +81,6 @@ class LoginCubit extends Cubit<LoginState> {
 
           _hasNavigated = true;
 
-          // ✅ الانتقال إلى الواجهة الجديدة بعد تسجيل الدخول
           Future.microtask(() {
             Get.offAll(() => BlocProvider(
                   create: (_) => LeavesCubit(LeaveRepository()),
@@ -90,7 +89,7 @@ class LoginCubit extends Cubit<LoginState> {
                     employeeId: _prefs.getEmployeeId() ?? 0,
                     companyId: _prefs.getCompanyId() ?? 0,
                     departmentId: _prefs.getDepartmentId() ?? 0,
-                    token: _prefs.getAccessToken() ?? '', // 👈 أضف التوكن
+                    token: _prefs.getAccessToken() ?? '',
                   ),
                 ));
           });
@@ -113,3 +112,4 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 }
+
