@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dental_project/app/my_app.dart';
 import 'package:dental_project/core/data/repository/shared_prefrence_repository.dart';
 import 'package:dental_project/ui/shared/shared_widgets/colors.dart';
@@ -38,15 +40,27 @@ class _LeavesViewState extends State<LeavesView> {
   bool _isBottomLoading = false;
   bool _showErrorMessage = false;
 
+  Timer? _tokenTimer;
+
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
       final isValid = SharedPrefrenceRepository().isTokenValid();
       if (!isValid) {
-        Get.to(const LoginView());
+        Get.offAll(const LoginView());
+        return;
       }
     });
+
+    _tokenTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
+      final isValid = SharedPrefrenceRepository().isTokenValid();
+      if (!isValid) {
+        timer.cancel();
+        Get.offAll(const LoginView());
+      }
+    });
+
     context.read<LeavesCubit>().getLeaves(
           companyId: widget.companyId,
           departmentId: widget.departmentId,
@@ -64,6 +78,13 @@ class _LeavesViewState extends State<LeavesView> {
     });
   }
 
+  @override
+  void dispose() {
+    _tokenTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _simulateBottomLoading() async {
     setState(() {
       _isBottomLoading = true;
@@ -76,12 +97,6 @@ class _LeavesViewState extends State<LeavesView> {
       _isBottomLoading = false;
       _showErrorMessage = true;
     });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   @override
