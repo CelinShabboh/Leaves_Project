@@ -94,9 +94,11 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: AppColors.mainColor),
+                            borderSide:
+                                const BorderSide(color: AppColors.mainColor),
                           ),
                           hintText: "Enter your email",
+                          errorText: state.emailError,
                           suffixIcon: Icon(
                             Icons.email,
                             color: _emailFocusNode.hasFocus
@@ -132,9 +134,11 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: AppColors.mainColor),
+                            borderSide:
+                                const BorderSide(color: AppColors.mainColor),
                           ),
                           hintText: "Enter your password",
+                          errorText: state.passwordError,
                           suffixIcon: IconButton(
                             icon: Icon(
                               state.isPasswordHidden
@@ -221,7 +225,9 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(height: 10),
                   BlocBuilder<LoginCubit, LoginState>(
                     builder: (context, state) {
-                      if (state.error != null) {
+                      if (state.error != null &&
+                          state.emailError == null &&
+                          state.passwordError == null) {
                         return Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: Text(
