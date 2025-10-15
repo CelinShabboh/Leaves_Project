@@ -5,7 +5,9 @@ class LoginState {
   final bool isRememberMeChecked;
   final bool isLoading;
   final String? error;
-  final String? successMessage; 
+  final String? successMessage;
+  final String? emailError;      
+  final String? passwordError;   
 
   const LoginState({
     this.email = '',
@@ -15,6 +17,8 @@ class LoginState {
     this.isLoading = false,
     this.error,
     this.successMessage,
+    this.emailError,
+    this.passwordError,
   });
 
   LoginState copyWith({
@@ -25,6 +29,8 @@ class LoginState {
     bool? isLoading,
     String? error,
     String? successMessage,
+    String? emailError,       
+    String? passwordError,   
   }) {
     return LoginState(
       email: email ?? this.email,
@@ -34,6 +40,8 @@ class LoginState {
       isLoading: isLoading ?? this.isLoading,
       error: error,
       successMessage: successMessage,
+      emailError: emailError,
+      passwordError: passwordError,
     );
   }
 }
