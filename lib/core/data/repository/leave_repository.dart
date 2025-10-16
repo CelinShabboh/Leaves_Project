@@ -32,10 +32,10 @@ class LeaveRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return LeaveListResponse.fromJson(response.data);
       } else {
-        throw Exception('❌ Failed to fetch leaves: ${response.statusCode}');
+        throw Exception('Failed to fetch leaves: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('🚨 Error fetching leaves: $e');
+      throw Exception('Error fetching leaves: $e');
     }
   }
 
@@ -45,7 +45,7 @@ class LeaveRepository {
   }) async {
     try {
       final response = await _dio.get(
-        '${ApiConstants.baseUrl}/api/v1/Employee/LeaveCount/$employeeId',
+        '${ApiConstants.baseUrl}/v1/Employee/LeaveCount/$employeeId',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -54,13 +54,25 @@ class LeaveRepository {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data['data'] ?? {};
+        final rawData = response.data['data'];
+
+        final Map<String, dynamic> data =
+            Map<String, dynamic>.from(rawData ?? {});
+
+        final fixedData = data.map((key, value) {
+          if (value is double) {
+            return MapEntry(key, value.toInt());
+          }
+          return MapEntry(key, value);
+        });
+
+        return fixedData;
       } else {
         throw Exception(
-            '❌ Failed to fetch leave count: ${response.statusCode}');
+            'Failed to fetch leave count: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('🚨 Error fetching leave count: $e');
+      throw Exception('Error fetching leave count: $e');
     }
   }
 }
